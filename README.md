@@ -21,19 +21,13 @@ The Post App is a web application built with Node.js, Express.js, EJS, and Tailw
 ## Installation
 
 1. **Clone the Repository**:
+   
+   Navigate to the Project Directory:
 
-   ```bash
-   git clone https://github.com/Chirag072394/post-app.git
-
-Navigate to the Project Directory:
-
-
-cd post-app
+   
 2. **Install Dependencies:
+    cd post-app
     npm install
-    Create a .env File:
-
-    Create a .env file in the root directory and add your environment variables, such as database connection strings and secret keys.
 
 3. **Start the Application:
 
