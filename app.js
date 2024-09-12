@@ -2,12 +2,15 @@ const express = require("express");
 const app = express();
 const path = require("path");
 
+
 const userModel = require("./models/User");
 const postModel = require("./models/Post");
 
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const upload = require('./config/multerconfig');
+
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -15,9 +18,23 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 
+
+//routes
 app.get("/", (req, res) => {
   res.render("index");
 });
+
+
+app.get("/profile/upload", (req,res)=>{
+  res.render("profileupload");
+})
+
+app.post("/upload",isLoggedIn ,upload.single('image'), async(req,res)=>{
+  let user = await userModel.findOne({email: req.user.email})
+  user.profilepic = req.file.filename;
+  await user.save();
+  res.redirect("/profile");
+})
 
 app.post("/register", async (req, res) => {
   let { username, name, password, email, age } = req.body;
@@ -69,12 +86,9 @@ app.get("/profile", isLoggedIn, async (req, res) => {
 app.get("/like/:id", isLoggedIn, async (req, res) => {
     let post = await postModel.findOne({_id: req.params.id}).populate("user");
     
-    console.log(req.user.userId);
-
     if (post.likes.indexOf(req.user.userId) === -1){
         post.likes.push(req.user.userId);
     }else {
-        console.log(req.user.userId + "is removed");
         post.likes.splice(post.likes.indexOf(req.user.userId), 1);
         
     }
